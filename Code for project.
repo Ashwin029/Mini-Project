@@ -1,0 +1,259 @@
+//Code is written by Ashwin S Nair,Chinnannagari Tharun,Anisha MR,Anu Shreya.
+
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(12,11,10,9,8,7);
+int flexPin1 = A0;
+int flexPin2 = A1;
+int flexPin3 = A2;
+int flexPin4 = A3;
+int value1; 
+int value2;
+int value3;
+int value4;
+int timesTosend=1;
+int count=0;
+
+
+#define trigpin A4 // digital pin 4 
+#define echopin A5 // digital pin 2 
+#define buzzer 10
+
+
+void setup()
+{
+  setupflex();
+  setupUsensor();
+}
+
+void loop()
+{
+  loopflex();
+  loopUsensor();
+}
+
+
+void setupflex()
+{ 
+lcd.begin(16,2);
+lcd.setCursor(0,0);
+lcd.print("WELCOME");
+Serial.begin(9600);      
+Serial.println("AT+CMGF=1"); //set GSM to text mode
+pinMode(buzzer, OUTPUT);
+digitalWrite(buzzer, HIGH); // buzzer
+}
+
+void setupUsensor()
+{  
+pinMode(trigpin, OUTPUT);
+pinMode(echopin, INPUT); 
+pinMode(buzzer,OUTPUT);   
+digitalWrite(buzzer, HIGH); // buzzer
+}
+
+void loopflex()
+{
+  value1 = analogRead(flexPin1);        
+  value2 = analogRead(flexPin2);  
+  value3 = analogRead(flexPin3);  
+  value4 = analogRead(flexPin4);  
+ Serial.print(value1);
+  
+  value1 = map(value1, 700, 900, 0, 255);
+  value2 = map(value2, 700, 900, 0, 255);
+  value3 = map(value3, 700, 900, 0, 255);
+  value4 = map(value4, 700, 900, 0, 255);
+  
+  if(value1 >80 && value2 <70 && value3 <70 && value4 <70)
+  {
+    Serial.print("FOOD");
+    lcd.clear();
+    lcd.print("FOOD");
+    digitalWrite(10, HIGH);
+    delay(500);
+    digitalWrite(10, LOW);
+          while(count<timesTosend){
+          delay(1500);
+          Serial.print("AT+CMGS=\"");
+          Serial.print("ATD+ +917259991285");
+          Serial.println("\"");
+          while (Serial.read()!='>');
+          {
+            Serial.print("FOOD REQUIREMENT BY PATIENT");  //SMS body
+            delay(500);
+            Serial.write(0x1A);  // sends ctrl+z end of message
+            Serial.write(0x0D);  // Carriage Return in Hex
+            Serial.write(0x0A);  // Line feed in Hex
+            //The 0D0A pair of characters is   the signal for the end of a line and beginning of another.
+            delay(5000);
+          }
+          count++;
+          }  }
+  if(value1 >80 && value2 >80 && value3 <70 && value4 <70)
+  {
+     lcd.clear();
+    lcd.print("MEDICINE");
+    Serial.print("MEDICINE");
+    digitalWrite(10, HIGH);
+    delay(500);
+    digitalWrite(10, LOW);
+          while(count<timesTosend)
+{
+          delay(1500);
+          Serial.print("AT+CMGS=\"");
+          Serial.print("ATD + +917259991285");
+          Serial.println("\"");
+          while (Serial.read()!='>');
+          {
+            Serial.print("MEDICINE REQUIREMENT BY PATIENT");  //SMS body
+            delay(500);
+            Serial.write(0x1A);  // sends ctrl+z end of message
+            Serial.write(0x0D);  // Carriage Return in Hex
+            Serial.write(0x0A);  // Line feed in Hex
+
+            //The 0D0A pair of characters is the signal for the end of a line and beginning of another.
+            delay(5000);
+          }
+          count++;
+          }  
+  }
+  if(value1 >80 && value2 >80 && value3 >80 && value4 <70)
+  {
+     lcd.clear();
+    lcd.print("WHEELCHAIR");
+    Serial.print("WHEELCHAIR");
+    digitalWrite(10, HIGH);
+    delay(500);
+    digitalWrite(10, LOW);
+          while(count<timesTosend){
+          delay(1500);
+          Serial.print("AT+CMGS=\"");
+          Serial.print("ATD + +917259991285");
+          Serial.println("\"");
+          while (Serial.read()!='>');
+          {
+            Serial.print("WHEELCHAIR REQUIREMENT BY PATIENT");  //SMS body
+            delay(500);
+            Serial.write(0x1A);  // sends ctrl+z end of message
+            Serial.write(0x0D);  // Carriage Return in Hex
+            Serial.write(0x0A);  // Line feed in Hex
+            //The 0D0A pair of characters is the signal for the end of a line and beginning of another.
+            delay(5000);
+          }
+          count++;
+          }
+  }
+  if(value1 >80 && value2 >80 && value3 >80 && value4 >80)
+  {
+     lcd.clear();
+    lcd.print("NORMAL");
+    Serial.print("NORMAL CONDITION");
+  }  
+  if(value1 <70 && value2 <70 && value3 <70 && value4 <70)
+  {
+     lcd.clear();
+    lcd.print("CRITICAL");
+    Serial.print("CRITICAL CONDITION");      
+    digitalWrite(10, HIGH);
+    delay(500);
+    digitalWrite(10, LOW);
+     Serial.print("ATD + +917259991285;");
+          delay(100);
+          Serial.println();
+          delay(30000);            // wait for 30 seconds...
+          Serial.println("ATH");   // hang up
+          while(count<timesTosend){
+          delay(1500);
+          Serial.print("AT+CMGS=\"");
+          Serial.print("ATD + +917259991285");
+          Serial.println("\"");
+          while (Serial.read()!='>');
+          {
+            Serial.print("EMERGENCY");  //SMS body
+            delay(500);
+            Serial.write(0x1A);  // sends ctrl+z end of message
+            Serial.write(0x0D);  // Carriage Return in Hex
+            Serial.write(0x0A);  // Line feed in Hex
+            //The 0D0A pair of characters is the signal for the end of a line and beginning of another.
+            delay(5000);
+          }
+          count++;
+          }    
+  }
+  if(value1 <70 && value2 >80 && value3 >80 && value4 >80)
+  {
+     lcd.clear();
+    lcd.print("WATER");
+    Serial.print("WATER");
+    
+    digitalWrite(10, HIGH);
+    delay(500);
+    digitalWrite(10, LOW);
+          while(count<timesTosend){
+          delay(1500);
+          Serial.print("AT+CMGS=\"");
+          Serial.print("ATD + +917259991285");
+          Serial.println("\"");
+          while (Serial.read()!='>');
+          {
+            Serial.print("WATER REQUIRED BY THE PATIENT");  //SMS body
+            delay(500);
+            Serial.write(0x1A);  // sends ctrl+z end of message
+            Serial.write(0x0D);  // Carriage Return in Hex
+            Serial.write(0x0A);  // Line feed in Hex
+            //The 0D0A pair of characters is the signal for the end of a line and beginning of another.
+            delay(5000);
+          
+          }          }    }}
+
+
+void loopUsensor()
+{
+  {
+lcd.clear();
+lcd.print("Obstacle Detection");
+Serial.print("OBSTACLE DETECTION");
+delay(1000);
+Serial.print("");
+int duration, distance; 
+analogWrite(trigpin, HIGH);
+delayMicroseconds(1000);  
+analogWrite(trigpin, LOW);
+duration = pulseIn(echopin,HIGH);
+if(duration>1)
+{
+distance = ( duration / 2) / 29.1;
+if ( distance < 0 ) 
+{
+ Serial.println("out of Range"); 
+}
+
+if ( (distance >= 0) && (distance <= 10 ))
+{
+  digitalWrite(buzzer, LOW);
+  delay(100);
+  digitalWrite(buzzer,HIGH);
+}
+if ( (distance >10) && (distance <= 20 ))
+{
+  digitalWrite(buzzer, LOW);
+  delay(250);
+  digitalWrite(buzzer,HIGH);
+}
+if ( (distance > 20) && (distance <= 30 ))
+{
+  digitalWrite(buzzer, LOW);
+  delay(500);
+  digitalWrite(buzzer,HIGH);
+}
+if (distance > 30 )
+{
+  digitalWrite(buzzer, HIGH); 
+}
+
+
+if(duration<1)
+{
+  digitalWrite(buzzer,HIGH);
+
+}}} }
